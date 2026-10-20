@@ -1,5 +1,8 @@
 # v39 A2WC0MME — Delta MAP experimental lab artifact
 
+> **IMPORTANT POST-AUDIT FINDING:** Subsequent instruction-level comparison found that v45 and this initial LAB v1 do **not** restore `FR1` or `R2` as the original code does. Even an attempted LAB v2 correction still clobbers `SR.T` and registers in OFF mode. **DO NOT FLASH**. See [ABI v2 findings](A2WC012E_V39_DMAP_ABI_V2.md).
+
+
 **WARNING: OFFLINE RESEARCH ONLY. DO NOT FLASH. NOT ENGINE/ECU VALIDATED.**
 
 On 2026-10-20 the original 524,288-byte `forester_sg9_sti_MAP_v45_DMAP_TEST_CHECKSUM.bin` was supplied and its SHA-256 matched the v45 project reference.
