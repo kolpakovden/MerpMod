@@ -33,7 +33,7 @@ Using a **temporary in-memory** 7×7 test table with 49 distinct cells:
 - Two initial T flag states.
 - Five images/variants per combination: original v39, v3 switch 0, v3 switch 1, v3 switch 2, v3 switch 255.
 
-This yields **216 combinations / 1080 real-opcode-model traces**.
+This yields **216 combinations / 1080 real-opcode-model traces**. The OFF path performs **11 more modeled instructions** than the v39 inline hook in the tested post-hook traces: equivalence of calculated values does not imply identical timing.
 
 | Check | Pass |
 | --- | --- |
@@ -52,7 +52,7 @@ Official SuperH compiler notes by Renesas describe R8–R14 and FR12–FR15 as c
 - https://www.renesas.com/en/document/apn/superh-cc-compiler-package-application-note
 - https://www.renesas.com/en/document/apn/sh-compiler-application-note-2-compiler-use-guide-efficient-programming-techniques
 
-The v3 wrapper's observed ON-path differences from v39 at the output include **R0, R3–R6 and FR2–FR4** (with final values varying by MAF/SD/Blend); these are scratch/argument registers in the documented interface. No differences in preserved R8–R14, FR12–FR15, SP or PR were observed in the modeled paths.
+The v3 wrapper's observed ON-path differences from v39 at the output include **R0, R3–R6 and FR2–FR4** (with final values varying by MAF/SD/Blend); these are scratch/argument registers in the documented interface. To avoid a false pass from all-zero initial state, an **additional full 1080-trace regression seeded every R8–R14 and FR12–FR15 with distinct nonzero values**. No differences in these preserved registers, SP or PR were observed in the modeled paths.
 
 OFF and flags 2/255 match all modeled CPU registers and SR.T after the original mode branches, even though R2 and T differ *temporarily* immediately after the hook (they are overwritten before use by original code).
 
