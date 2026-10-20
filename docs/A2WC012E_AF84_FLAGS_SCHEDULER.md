@@ -50,21 +50,24 @@ The mode branches at `0x15184–0x151A6` give:
 
 **Do not infer driver mode, throttle action or update period from a flag bit alone.** RAM flag producers and timing are still to be traced.
 
-## 4. Scheduling chain — no defensible millisecond number yet
+## 4. Scheduling chain — corrected record boundaries; no defensible millisecond number yet
 
 ```text
-task descriptor ROM[0x4700..0x470F]:
-  0x4700 : FFFF71CC  task RAM address
+CORRECTED descriptor at 0x46FC (index 6 of 19, stride 16):
+  0x46FC : 04000200  task header; exact meaning unknown
+  0x4700 : FFFF71CC  RAM state pointer
   0x4704 : 000064D6  callback
-  0x4708 : 02000000  unverified metadata
-  0x470C : 04000300  unverified metadata
+  0x4708 : 02000000  additional metadata
+  0x470C : 04000300  NEXT task's header (NOT current task timing)
 
 0x64D6 -> ROM pointer at 0x65F4 -> 0x110B8
 0x110B8 -> ROM pointer at 0x112F0 -> 0x15148
 0x15148 -> AF84 / AF88 producer
 ```
 
-The descriptor's flags/intervals **have not been decoded**. This confirms an integration path but not `10 ms`, `15 ms` or another fixed sampling period.
+The descriptor's fields **have not been decoded**; the earlier 0x4700-based record alignment was wrong.
+**Alignment correction:** this exact record layout is corroborated by the two SHLL2 instructions and the +4 field load in dispatch code. See [19-record audit](A2WC012E_SCHEDULER_DESCRIPTOR_AUDIT.md).
+ This confirms an integration path but not `10 ms`, `15 ms` or another fixed sampling period.
 
 ## Next proof steps
 
