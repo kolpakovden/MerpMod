@@ -47,6 +47,12 @@ task record @0x46FC (index 6)
 
 This variation suggests that the header includes a category/dispatch selector, **but its numerical values cannot yet be translated into ms**. Treat these labels as values, not measured timing.
 
+### How the third header byte is used
+
+In dispatcher helper `0x3F70`, code `0x3FA2`/`0x3FA4` shifts a task index to a 16-byte offset and `0x3FA6` adds base `0x469C`. It then reads the descriptor header's **byte at offset +2** using `84D2` at `0x3FB0` (`MOV.B @(2,R13),R0`), copies it to `R6` at `0x3FB2`, and calls the helper at `0x3A1A` through `JSR @R10` at `0x3FB4`. For our task, this byte equals `2`.
+
+This is **actual evidence that the byte is consumed as an input to dispatch logic**. It is **not evidence that its value 2 means 2 ms**, 2 ticks or a particular priority. The helper and its timer origin must still be fully resolved.
+
 ## Shared sections between v39 and v45
 
 The following ranges are byte-identical:
