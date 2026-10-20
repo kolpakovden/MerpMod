@@ -1,5 +1,7 @@
 # A2WC012E — v39 Delta MAP ABI analysis (LAB v1 → LAB v2)
 
+> **2026-10-20 REASSESSMENT:** Earlier claims of a proven v45 FR1/R2 functional bug were **premature**. The correct opcode at `0x6A61E` is `621C = EXTU.B R1,R2`; R2 and T are overwritten before their immediate use, and FR1 is reloaded from RAM in MAF/SD/Blend branches. See [post-hook liveness](A2WC012E_V39_POSTHOOK_LIVENESS.md). Both LAB images remain **NOT FOR FLASH**.
+
 > **OFFLINE RESEARCH ONLY. DO NOT FLASH EITHER LAB ROM TO ECU.**
 > The checks below used a narrow Python interpreter for selected SH opcodes, with a **test stub** for the ROM's Pull3D routine at `0x2110`. This is **not** an MCU emulator, bench test, or confirmation of ABI safety.
 
@@ -14,7 +16,7 @@
 
 All are 524288-byte images. v2 differs from v1 in **four byte positions** within the three instructions at `0x6AD34..0x6AD39`; it differs from untouched v39 in **300 bytes** total.
 
-## Defect inherited from the v45 wrapper
+## Register snapshot differences (NOT a confirmed defect)
 
 Original v39 at `0x6A612`:
 
@@ -27,11 +29,11 @@ Original v39 at `0x6A612`:
 6A61E  F21C  FMOV    FR1,FR2
 ```
 
-The v45 reference replaces `0x6A612` with a jump to `0x6AD20`. Its wrapper moves `FR3` into `FR4`, calls the Delta MAP multiplication routine `0x6ACF8`, and writes `FR0` into `@R1`. **It does not update `FR1` before returning to `0x6A618`**, even though `FR1` is read at `0x6A61E`. Therefore the reference implementation and LAB v1 are **not state-equivalent** to the v39 original at this hook.
+The v45 reference replaces `0x6A612` with a jump to `0x6AD20`. Its wrapper moves `FR3` into `FR4`, calls the Delta MAP multiplication routine `0x6ACF8`, and writes `FR0` into `@R1`. **It does not update `FR1` before returning to `0x6A618`**, but `FR1` is later reloaded from memory on each MAF/SD/Blend path. Therefore the reference implementation and LAB v1 are **not immediately state-equivalent** at the hook exit; this does **not** establish a functional defect.
 
-Additionally v45 uses `R2` as a jump register on returning to the original MerpMod code, overwriting the prior value of `R2`.
+Additionally v45 uses `R2` as a jump register on returning to the original MerpMod code, overwriting the prior value of `R2` temporarily; the original code overwrites R2 again at `0x6A61E` before the compare.
 
-## LAB v2 experimental corrections
+## LAB v2 experimental snapshot-restoration changes (not established as necessary)
 
 | Offset | LAB v1 | LAB v2 | Intended change |
 | --- | --- | --- | --- |
@@ -54,11 +56,11 @@ The trace starts at the actual byte sequence `0x6A612`. Initial SD input `FR3=37
 
 A **test-memory-only**, non-neutral first cell set to about 1.10 gave ~40.84 with `ON` and 37.125 with `OFF`. This demonstrates branch selection under the deliberately limited model; it does **not** validate the real OEM 3D algorithm.
 
-## Remaining BLOCKERS
+## Remaining questions and blockers
 
 **Important: LAB v2 OFF is still NOT transparent to original v39.**
 
-- The new conditional selector `CMP/EQ` changes **SR.T**. For the tested initial T=1, OFF leaves T=0 while original v39 preserved T. For another initial T, even ON may be mismatched.
+- The new conditional selector `CMP/EQ` changes **SR.T** at hook exit. The original code executes another `CMP/EQ` at `0x6A622` before the subsequent conditional branch, so this difference may be dead in the observed path. Wider liveness/interrupt-context review is still required.
 - The wrapper changes **R0**, **FR0** and **FR4** even when OFF; ON can additionally change **R4**. Liveness and subsequent use have not been proven.
 - Reference v45 itself is EXPERIMENTAL; inheriting its multiply logic gives no guarantee of safety.
 - The model stubs `Pull3DFloat@0x2110`, knows nothing about other registers altered by the actual ROM function, FPU/FPSCR modes, interrupts, timing or RAM lifetime.
