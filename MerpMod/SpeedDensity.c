@@ -16,6 +16,11 @@
 
 #if SD_HACKS
 
+// A Delta MAP-enabled target must provide a validated RAM pointer.
+#if SD_DMAP && !defined(pDeltaMap)
+#error "SD_DMAP requires a target-specific pDeltaMap runtime pointer"
+#endif
+
 float ComputeMassAirFlow(TwoDTable* MafScalingTable, float MafVoltage)
 {	
 	pRamVariables->MafFromSensor = Pull2DHooked(MafScalingTable,MafVoltage);	
@@ -43,7 +48,16 @@ float ComputeMassAirFlow(TwoDTable* MafScalingTable, float MafVoltage)
 		
 	pRamVariables->AtmosphericCompensation = Pull3DHooked(&AtmosphericCompensationTable, *pManifoldAbsolutePressure, *pAtmoPress);
 #if SD_DMAP
-	pRamVariables->DeltaMapCompensation = Pull3DHooked(&SDDeltaMapTable, *pDeltaMap, *pEngineSpeed);
+	// Fail-safe: only the explicit value 1 enables the compensation.
+	// When disabled, do not read pDeltaMap and keep the SD result unchanged.
+	if (DefaultSDDeltaMapEnabled == 1)
+	{
+		pRamVariables->DeltaMapCompensation = Pull3DHooked(&SDDeltaMapTable, *pDeltaMap, *pEngineSpeed);
+	}
+	else
+	{
+		pRamVariables->DeltaMapCompensation = 1.0f;
+	}
 #endif
 
 	pRamVariables->MafFromSpeedDensity = 

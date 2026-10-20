@@ -106,6 +106,9 @@
 #define pVehicleSpeed ((float*)0xFFFFB208)
 #define pCoolantTemp ((float*)0xFFFF90C8)
 #define pAtmoPress ((float*)0xFFFF9134)
+// Delta MAP runtime reference from Forester A2WC012E research.
+// Verify units, timing and lifetime on a matching ROM before vehicle use.
+#define pDeltaMap ((float*)0xFFFFAF88)
 #define pManifoldAbsolutePressure ((float*)0xFFFFAF94)
 #define pIntakeAirTemp ((float*)0xFFFF90B8)
 #define pMassAirFlow ((float*)0xFFFF90F4)

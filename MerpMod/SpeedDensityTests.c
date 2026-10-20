@@ -49,6 +49,12 @@ void SpeedDensityUnitTests()
 	// Pretend the ECU has just booted and initialized, so MafMode should be set to default (sensor)
 	Assert(pRamVariables->MafMode == MafModeSensor, "First execution should set MafMode to MafModeSensor.");
 	
+#if SD_DMAP
+	// Fail-safe runtime default is disabled; neutral 7x7 table is also harmless.
+	Assert(DefaultSDDeltaMapEnabled == 0, "Delta MAP compensation should be disabled by default.");
+	*pDeltaMap = 1000.0f;
+#endif
+
 	*pEngineSpeed = 1000.0f;
 	*pManifoldAbsolutePressure = 268.917649; // Corresponds to -9.5psiG, which is normal for idle.	
 	*pAtmoPress = 700;
@@ -68,6 +74,28 @@ void SpeedDensityUnitTests()
 	result = CallSpeedDensityHook();	
 	Assert(AreCloseEnough(result, expectedMafFromSpeedDensity), "Second execution should return MAF from speed-density.");
 	Assert(pRamVariables->MafMode == MafModeSpeedDensity, "MafMode should remain set to MafModeSpeedDensity.");
+#if SD_DMAP
+	Assert(AreCloseEnough(pRamVariables->DeltaMapCompensation, 1.0f), "Disabled Delta MAP must have a factor of one.");
+
+	// Simulator-only coverage of the ROM calibration switch.  These writes to
+	// DefaultSDDeltaMapEnabled are for the HEW test harness, not a running ECU.
+	float sdAirflowWithDeltaDisabled = result;
+
+	// A neutral 7x7 table should leave airflow unchanged when enabled.
+	DefaultSDDeltaMapEnabled = 1;
+	result = CallSpeedDensityHook();
+	Assert(AreCloseEnough(pRamVariables->DeltaMapCompensation, 1.0f), "Enabled neutral Delta MAP should have a factor of one.");
+	Assert(AreCloseEnough(result, sdAirflowWithDeltaDisabled), "Enabling a neutral Delta MAP must preserve SD airflow.");
+
+	// Invalid values must fail safe to the original SD calculation.
+	DefaultSDDeltaMapEnabled = 2;
+	result = CallSpeedDensityHook();
+	Assert(AreCloseEnough(pRamVariables->DeltaMapCompensation, 1.0f), "Invalid Delta MAP enable value must disable correction.");
+	Assert(AreCloseEnough(result, sdAirflowWithDeltaDisabled), "Invalid Delta MAP enable value must preserve SD airflow.");
+
+	// Restore the default for all subsequent tests.
+	DefaultSDDeltaMapEnabled = 0;
+#endif
 
 #if SWITCH_HACKS
 	//Check Blend = 1

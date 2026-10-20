@@ -260,7 +260,9 @@ DEFNEW3D("Volumetric Efficiency Table 2",VolumetricEfficiencyTable2);
 #endif
 
 #if SD_DMAP
-DEFINE3D("Delta MAP Compensation",SDDeltaMapTable);
+// Export the actual 3D table definition whenever Delta MAP is compiled in.
+DEFNEW3D("Delta MAP Compensation",SDDeltaMapTable);
+DEFNEW1D("Delta MAP Compensation Enable",DefaultSDDeltaMapEnabled);
 DEFINERAM("MerpMod Delta MAP",pDeltaMap,"float","E");
 DEFINERAMVAR("MerpMod Delta MAP Compensation Direct",DeltaMapCompensation,"float","E");
 #endif
@@ -268,6 +270,8 @@ DEFINERAMVAR("MerpMod Delta MAP Compensation Direct",DeltaMapCompensation,"float
 DEFNEW3D("Atmospheric Pressure Compensation",AtmosphericCompensationTable);
 DEFNEW3D("SD Blending Table",SDBlendingTable);
 DEFNEW1D("Engine Displacement",Displacement);
+// Runtime mode: 1 = MAF sensor, 2 = Speed Density, 3 = blending.
+// SD_DMAP is a separate compile-time feature, not another MafMode value.
 DEFNEW1D("Speed Density Mode",DefaultMafMode);
 DEFNEW1D("Speed Density Constant",SpeedDensityConstant);
 
