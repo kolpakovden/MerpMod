@@ -1,5 +1,8 @@
 # A2WC012E — scheduler record boundaries and AF84 callback (v39/v45)
 
+> **FOLLOW-UP:** Function `0x3A1A` has now been decoded. The descriptor header byte `2` is used as an index into a task/event bitmap: `0xFFFF72E0 |= 0x04` on its registration branch. This **does not prove a 2 ms period**; scheduler setup `0x3E70`, context switch `0x38A8` (`RTE`), and task handoff `0x3DB8` have also been traced. See [task-event scheduler trace](A2WC012E_DMAP_SCHEDULER_CLASS2_TRACE.md).
+
+
 **Status: BYTE-VERIFIED STRUCTURE; ABSOLUTE UPDATE PERIOD STILL UNKNOWN.**
 
 Validated against the exact 524,288-byte images:
