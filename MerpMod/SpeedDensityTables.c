@@ -140,6 +140,10 @@ ThreeDTable VolumetricEfficiencyTable2  SPEEDDENSITYDATA = {
 
 #if SD_DMAP
 
+// Editable in ECUFlash after a patched ROM has been built and its address verified.
+// Disabled by default to preserve the previous SD result.
+unsigned char DefaultSDDeltaMapEnabled SPEEDDENSITYDATA = 0;
+
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //!! Delta Map compensation table
 //!! Compensate SD-calculated MAF values based on delta map
