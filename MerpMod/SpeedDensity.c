@@ -16,6 +16,11 @@
 
 #if SD_HACKS
 
+// A Delta MAP-enabled target must provide a validated RAM pointer.
+#if SD_DMAP && !defined(pDeltaMap)
+#error "SD_DMAP requires a target-specific pDeltaMap runtime pointer"
+#endif
+
 float ComputeMassAirFlow(TwoDTable* MafScalingTable, float MafVoltage)
 {	
 	pRamVariables->MafFromSensor = Pull2DHooked(MafScalingTable,MafVoltage);	
