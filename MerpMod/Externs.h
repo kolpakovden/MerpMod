@@ -210,6 +210,8 @@ extern float LCMinimumThrottle;
 
 #if SD_DMAP
 extern ThreeDTable SDDeltaMapTable;
+// ROM calibration: 0 = disabled, 1 = enable Delta MAP correction.
+extern unsigned char DefaultSDDeltaMapEnabled;
 #endif
 
 extern float CelsiusToKelvin;
