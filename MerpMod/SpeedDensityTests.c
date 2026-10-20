@@ -50,7 +50,8 @@ void SpeedDensityUnitTests()
 	Assert(pRamVariables->MafMode == MafModeSensor, "First execution should set MafMode to MafModeSensor.");
 	
 #if SD_DMAP
-	// The initially neutral 7x7 compensation must not affect SD airflow.
+	// Fail-safe runtime default is disabled; neutral 7x7 table is also harmless.
+	Assert(DefaultSDDeltaMapEnabled == 0, "Delta MAP compensation should be disabled by default.");
 	*pDeltaMap = 1000.0f;
 #endif
 
