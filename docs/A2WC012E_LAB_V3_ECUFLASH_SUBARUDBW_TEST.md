@@ -1,5 +1,8 @@
 # A2WC0MME LAB v3 — cross-checking real EcuFlash subarudbw output (NO ECU FLASH)
 
+> **Checker v4 PowerShell hotfix (2026-10-21):** The v3 script used signed hexadecimal integer literals `0x97A46BAF` / `0x98A46BAF` in a `[uint64]$expectedWord` assignment. Windows PowerShell treated `0x97A46BAF` as the negative `Int32` value `-1750832209` and raised a conversion error **after** successfully printing matching checksum values and exact five changed offsets. Fixed by explicit unsigned parsing: `[Convert]::ToUInt64('97A46BAF', 16)` and similarly for OFF. Reproducible Python checker passes both known OFF and ON expected complete-file hashes; native PowerShell v4 execution awaits user testing. **The earlier saved ON ROM SHA-256 already matched independently predicted output; no further EcuFlash save or ECU connection is required.**
+
+
 > **STATUS:** The offline checksum scheme has been proven on user-supplied v39 and v45 and predicted for LAB v3. **The actual proprietary EcuFlash `subarudbw` module has NOT yet been run against LAB v3.** No LAB image has been approved for ECU flashing.
 
 ## Actual file-only EcuFlash test result — 2026-10-21
