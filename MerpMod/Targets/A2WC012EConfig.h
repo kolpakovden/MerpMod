@@ -4,7 +4,9 @@
 //////////////////////////////
 
 #define AUTO_TRANS 0
-#define SD_DMAP		0
+// 0 = no Delta MAP correction; 1 = include the 7x7 Delta MAP table.
+// Runtime Speed Density Mode remains independent (1 = MAF, 2 = SD, 3 = blend).
+#define SD_DMAP		1
 					
 #define ECU_IDENTIFIER_CHARS (10)
 #define ECU_CALIBRATION_CHARS (8)
