@@ -49,6 +49,11 @@ void SpeedDensityUnitTests()
 	// Pretend the ECU has just booted and initialized, so MafMode should be set to default (sensor)
 	Assert(pRamVariables->MafMode == MafModeSensor, "First execution should set MafMode to MafModeSensor.");
 	
+#if SD_DMAP
+	// The initially neutral 7x7 compensation must not affect SD airflow.
+	*pDeltaMap = 1000.0f;
+#endif
+
 	*pEngineSpeed = 1000.0f;
 	*pManifoldAbsolutePressure = 268.917649; // Corresponds to -9.5psiG, which is normal for idle.	
 	*pAtmoPress = 700;
@@ -68,6 +73,9 @@ void SpeedDensityUnitTests()
 	result = CallSpeedDensityHook();	
 	Assert(AreCloseEnough(result, expectedMafFromSpeedDensity), "Second execution should return MAF from speed-density.");
 	Assert(pRamVariables->MafMode == MafModeSpeedDensity, "MafMode should remain set to MafModeSpeedDensity.");
+#if SD_DMAP
+	Assert(AreCloseEnough(pRamVariables->DeltaMapCompensation, 1.0f), "Neutral Delta MAP table should apply a factor of one.");
+#endif
 
 #if SWITCH_HACKS
 	//Check Blend = 1
