@@ -1,5 +1,8 @@
 # A2WC012E — hardware history review and LAB v3 integration blocker
 
+> **CURRENT VEHICLE BASE CONFIRMED BY USER (2026-10-21):** After abandoning overcomplicated v86 and restarting clean from v0→v25, the user's currently installed ROM is reported to be clean **v39**, not v68/v84/v85. The user supplied a fresh 524288-byte `Forester_SG9_MAP_clean_v39(3).bin`, SHA-256 **`43a4751d68da4ddca9d483c1723a78f04c85ad982423f48177402f9962245ad4`**, byte-identical to the original v39 input used for LAB v3. The original v39 bytes at `0x6AC40..0x6ADC3` are all `FF`, and SD mode `0x69DD4 = 2`. Its checksum `0x7FB88 = 0x9B084277` matches the independent calculation. **Therefore the late-ROM Advanced LC collision discussed below does NOT apply to the actual supplied v39 baseline.** It remains a warning only against transplanting v3 into the **older historical late-series branch** if that branch is revisited. A file/hash match does not independently prove the ECU's physical flash contents; no on-hardware run of v3 has occurred. LAB v3 remains **NOT FOR FLASH** until execution/recovery validation.
+
+
 > **STOP: NEVER FLASH v39 LAB v3 AS IF IT WERE AN UPDATE FOR A LATER v68/v84/v85 VEHICLE ROM.** It is a separate, v39-based offline artifact. Its checksum PASS applies only to its own image.
 
 ## Repository evidence reviewed (2026-10-21)
