@@ -1,5 +1,8 @@
 # A2WC012E v39/v45 — AF84 producer paths and raw Delta MAP units
 
+> **UPDATE (2026-10-21):** The FR15 source and AF8C/AF90 history writers are now traced in ROM, as are the two selector flag bits. FR15 comes from calibrated MAP float `0xFFFF90D8`; selector bits are `0xFFFFC4CC & 0x10` and `0xFFFFB469 & 0x80`. See [new source/flags/scheduler research](A2WC012E_AF84_FLAGS_SCHEDULER.md). The original notes below reflect the earlier research stage; physical units and scheduler period remain unverified.
+
+
 **Status: STATIC OPCODE RESEARCH / NOT FOR FLASH**. No ROM modifications were made.
 
 Original ROM evidence:
