@@ -55,3 +55,22 @@ It rejects any ROM that fails the exact SHA/expected bytes checks. Passing is a 
 - Primary OL and Failsafe OL remain the two separate **OEM** IAM-selected maps. Do not repurpose failsafe as user bank 2.
 
 **No new v39 firmware or flashable patch was produced by this preflight.**
+
+
+## v45 reference archive validation (2026-10-20)
+
+The user supplied the purported v45 reference `forester_sg9_sti_MAP_v45_DMAP_TEST_CHECKSUM.bin.xz`, downloaded from the Forester repository.
+
+**Result: INVALID XZ ARCHIVE. No machine-code comparison performed.**
+
+- Filename size: `14,999` bytes.
+- SHA-256 of uploaded archive: `aeec7da9598621616f7afe6c1d84534ed299b5df8119a70b8a3b1b80c0fc335a`.
+- Git blob SHA-1 of uploaded archive: `f161ff2cbb4be5309321415eaeb7718e9def208e`.
+- This SHA-1 **exactly matches the Git blob** for the corresponding `.bin.xz` at `roms/experimental/v45/` in `forester_A2WC012E`; the issue is present in the repository artifact, not caused by download.
+- Header bytes: `2D 6F 69 C0 1E D4`, while a valid XZ file should begin `FD 37 7A 58 5A 00`.
+- Standard XZ/LZMA, gzip, bzip2, zlib, deflate, Brotli, Zstandard and LZ4 frame checks did not recognize it.
+- Expected SHA-256 of **decompressed** v45 BIN from [original v45 documentation](https://github.com/kolpakovden/forester_A2WC012E/blob/main/roms/experimental/v45/README.md): `92e0ff671bda35fe7951d68513c2ed188035b950556ffbe3e1e7cb603f241329`. This cannot be verified without the actual ROM data.
+
+**Next action:** obtain the original full 524,288-byte `forester_sg9_sti_MAP_v45_DMAP_TEST_CHECKSUM.bin` directly from the PC/older archive, or a *genuine* XZ archive containing exactly that file. Then check SHA-256 before disassembly or patch integration. Do not treat the invalid `.xz` as an executable reference and do not copy `v45` hook bytes based only on README.
+
+The exact original `v39` remains confirmed by the nine independent checks and has not been modified.
