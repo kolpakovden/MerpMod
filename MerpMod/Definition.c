@@ -262,6 +262,7 @@ DEFNEW3D("Volumetric Efficiency Table 2",VolumetricEfficiencyTable2);
 #if SD_DMAP
 // Export the actual 3D table definition whenever Delta MAP is compiled in.
 DEFNEW3D("Delta MAP Compensation",SDDeltaMapTable);
+DEFNEW1D("Delta MAP Compensation Enable",DefaultSDDeltaMapEnabled);
 DEFINERAM("MerpMod Delta MAP",pDeltaMap,"float","E");
 DEFINERAMVAR("MerpMod Delta MAP Compensation Direct",DeltaMapCompensation,"float","E");
 #endif
