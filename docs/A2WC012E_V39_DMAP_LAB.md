@@ -1,6 +1,8 @@
 # v39 A2WC0MME — Delta MAP experimental lab artifact
 
-> **IMPORTANT POST-AUDIT FINDING:** Subsequent instruction-level comparison found that v45 and this initial LAB v1 do **not** restore `FR1` or `R2` as the original code does. Even an attempted LAB v2 correction still clobbers `SR.T` and registers in OFF mode. **DO NOT FLASH**. See [ABI v2 findings](A2WC012E_V39_DMAP_ABI_V2.md).
+> **2026-10-20 REASSESSMENT:** Earlier claims of a proven v45 FR1/R2 functional bug were **premature**. The correct opcode at `0x6A61E` is `621C = EXTU.B R1,R2`; R2 and T are overwritten before their immediate use, and FR1 is reloaded from RAM in MAF/SD/Blend branches. See [post-hook liveness](A2WC012E_V39_POSTHOOK_LIVENESS.md). Both LAB images remain **NOT FOR FLASH**.
+
+> **POST-AUDIT REGISTER STATE:** v45 and LAB v1 differ from v39 at the immediate return in FR1/R2/T, but post-hook liveness checks show these differences may be overwritten before use. Earlier claims of a proven defect were premature. **DO NOT FLASH**. See [post-hook liveness](A2WC012E_V39_POSTHOOK_LIVENESS.md).
 
 
 **WARNING: OFFLINE RESEARCH ONLY. DO NOT FLASH. NOT ENGINE/ECU VALIDATED.**
